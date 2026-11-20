@@ -1,0 +1,384 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>But what is a neural network? | Deep learning chapter 1</title>
+<style>
+:root {
+  --bg: #fbfaf7;
+  --surface: #ffffff;
+  --text: #1d1d1f;
+  --muted: #5f6368;
+  --line: #e3e0d8;
+  --accent: #2f6fde;
+  --accent-soft: #e8f0fd;
+  --pos: #2e8b3e;
+  --neg: #d23c3c;
+  --hot: #d2541f;
+  --warn-soft: #fff6dd;
+  --warn: #8a6100;
+  --code-bg: #f4f2ec;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #141416;
+    --surface: #1c1c1f;
+    --text: #ececee;
+    --muted: #a0a0a8;
+    --line: #2f2f34;
+    --accent: #7aa7ff;
+    --accent-soft: #1d2a44;
+    --pos: #7fd28c;
+    --neg: #ff7b7b;
+    --hot: #ff9a6b;
+    --warn-soft: #2e2713;
+    --warn: #f0c75e;
+    --code-bg: #232327;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #141416;
+  --surface: #1c1c1f;
+  --text: #ececee;
+  --muted: #a0a0a8;
+  --line: #2f2f34;
+  --accent: #7aa7ff;
+  --accent-soft: #1d2a44;
+  --pos: #7fd28c;
+  --neg: #ff7b7b;
+  --hot: #ff9a6b;
+  --warn-soft: #2e2713;
+  --warn: #f0c75e;
+  --code-bg: #232327;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 16px/1.7 -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard", "Noto Sans KR", sans-serif;
+  word-break: keep-all;
+}
+main { max-width: 860px; margin: 0 auto; padding: 48px 16px 96px; }
+h1 { font-size: 1.9rem; line-height: 1.3; margin: 0 0 8px; letter-spacing: -0.02em; }
+h2 { font-size: 1.4rem; margin: 64px 0 12px; padding-top: 16px; border-top: 1px solid var(--line); letter-spacing: -0.01em; }
+h3 { font-size: 1.1rem; margin: 32px 0 8px; }
+p { margin: 12px 0; }
+.meta { color: var(--muted); font-size: 0.92rem; margin: 0 0 8px; }
+.lead { font-size: 1.05rem; margin: 16px 0 24px; }
+a { color: var(--accent); }
+nav.toc { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px 20px; margin: 24px 0; }
+nav.toc ol { margin: 0; padding-left: 20px; columns: 2; column-gap: 32px; }
+nav.toc li { break-inside: avoid; }
+code { font: 0.9em/1.5 "SF Mono", ui-monospace, Menlo, monospace; background: var(--code-bg); padding: 1px 5px; border-radius: 4px; }
+pre { background: var(--code-bg); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; overflow-x: auto; margin: 12px 0; }
+pre code { background: none; padding: 0; font-size: 0.86rem; line-height: 1.6; }
+.c { color: var(--muted); }
+.formula { font: 1.15rem/1.6 "Times New Roman", Georgia, serif; text-align: center; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px; margin: 16px 0; }
+table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 0.93rem; }
+.table-wrap { overflow-x: auto; }
+th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { color: var(--muted); font-weight: 600; font-size: 0.85rem; }
+td.t { font-variant-numeric: tabular-nums; color: var(--accent); white-space: nowrap; }
+.note, .warn { border-radius: 10px; padding: 12px 16px; margin: 16px 0; }
+.note { background: var(--accent-soft); }
+.warn { background: var(--warn-soft); }
+.note strong, .warn strong { display: block; margin-bottom: 2px; }
+.note strong { color: var(--accent); }
+.warn strong { color: var(--warn); }
+figure { margin: 20px 0; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px; }
+figure svg { width: 100%; height: auto; display: block; }
+figcaption { color: var(--muted); font-size: 0.85rem; margin-top: 8px; text-align: center; }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+svg text { fill: var(--muted); font: 12px -apple-system, sans-serif; }
+svg .lbl { fill: var(--text); font-size: 13px; }
+svg .node { fill: var(--surface); stroke: var(--muted); stroke-width: 1.2; }
+svg .node-on { fill: var(--hot); stroke: var(--hot); }
+svg .edge { stroke: var(--line); stroke-width: 0.8; }
+svg .axis { stroke: var(--muted); stroke-width: 1; fill: none; }
+svg .curve { stroke: var(--accent); stroke-width: 2.2; fill: none; }
+svg .curve2 { stroke: var(--hot); stroke-width: 2.2; fill: none; }
+svg .grid { fill: none; stroke: var(--line); stroke-width: 0.6; }
+svg .pos { fill: var(--pos); }
+svg .neg { fill: var(--neg); opacity: 0.75; }
+footer { margin-top: 64px; color: var(--muted); font-size: 0.85rem; }
+@media (max-width: 640px) {
+  main { padding-top: 32px; }
+  h1 { font-size: 1.5rem; }
+  .two { grid-template-columns: 1fr; }
+  nav.toc ol { columns: 1; }
+}
+</style>
+</head>
+<body>
+<main>
+
+<h1>But what is a neural network?<br>Deep learning chapter 1</h1>
+<p class="meta">3Blue1Brown · 2017-10-05 · 18분 40초 · <a href="https://www.youtube.com/watch?v=aircAruvnKk">YouTube에서 보기</a></p>
+<p class="lead">손글씨 숫자를 알아보는 신경망을 예로, 신경망의 <strong>구조</strong>를 사전 지식 없이 수학으로 설명하는 영상. 학습 방법은 다음 편(2장 Gradient descent)에서 다룸.</p>
+
+<nav class="toc">
+<ol>
+  <li><a href="#structure">전체 구조</a></li>
+  <li><a href="#timeline">영상 흐름</a></li>
+  <li><a href="#neuron">뉴런과 활성값</a></li>
+  <li><a href="#layers">층을 쌓는 이유</a></li>
+  <li><a href="#weights">가중치와 가중합</a></li>
+  <li><a href="#sigmoid">시그모이드와 편향</a></li>
+  <li><a href="#params">매개변수 13,002개</a></li>
+  <li><a href="#matrix">행렬로 한 줄에 쓰기</a></li>
+  <li><a href="#relu">시그모이드 대신 ReLU</a></li>
+  <li><a href="#study">01 예제와 연결</a></li>
+</ol>
+</nav>
+
+<!-- 1 -->
+<h2 id="structure">1. 전체 구조</h2>
+<figure>
+<svg viewBox="0 0 760 330" role="img" aria-label="입력층 784개, 은닉층 16개 두 개, 출력층 10개로 이루어진 신경망. 출력층에서 9에 해당하는 뉴런이 가장 밝다">
+  <g class="edge">
+    <!-- input -> h1 -->
+    <path d="M110 50 L300 70 M110 50 L300 160 M110 50 L300 250 M110 110 L300 70 M110 110 L300 160 M110 110 L300 250 M110 170 L300 70 M110 170 L300 160 M110 170 L300 250 M110 250 L300 70 M110 250 L300 160 M110 250 L300 250"/>
+    <!-- h1 -> h2 -->
+    <path d="M300 70 L470 70 M300 70 L470 160 M300 70 L470 250 M300 160 L470 70 M300 160 L470 160 M300 160 L470 250 M300 250 L470 70 M300 250 L470 160 M300 250 L470 250"/>
+    <!-- h2 -> out -->
+    <path d="M470 70 L640 60 M470 70 L640 110 M470 70 L640 260 M470 160 L640 60 M470 160 L640 110 M470 160 L640 260 M470 250 L640 60 M470 250 L640 110 M470 250 L640 260"/>
+  </g>
+  <circle cx="110" cy="50" r="11" class="node"/>
+  <circle cx="110" cy="110" r="11" class="node-on"/>
+  <circle cx="110" cy="170" r="11" class="node"/>
+  <text x="110" y="214" text-anchor="middle" class="lbl">⋮</text>
+  <circle cx="110" cy="250" r="11" class="node"/>
+
+  <circle cx="300" cy="70" r="11" class="node-on"/>
+  <circle cx="300" cy="160" r="11" class="node"/>
+  <text x="300" y="210" text-anchor="middle" class="lbl">⋮</text>
+  <circle cx="300" cy="250" r="11" class="node"/>
+
+  <circle cx="470" cy="70" r="11" class="node"/>
+  <circle cx="470" cy="160" r="11" class="node-on"/>
+  <text x="470" y="210" text-anchor="middle" class="lbl">⋮</text>
+  <circle cx="470" cy="250" r="11" class="node"/>
+
+  <circle cx="640" cy="60" r="11" class="node"/><text x="662" y="64">0</text>
+  <circle cx="640" cy="110" r="11" class="node"/><text x="662" y="114">1</text>
+  <text x="640" y="190" text-anchor="middle" class="lbl">⋮</text>
+  <circle cx="640" cy="260" r="11" class="node-on"/><text x="662" y="264" class="lbl">9 ← 가장 밝은 뉴런이 답</text>
+
+  <text x="110" y="292" text-anchor="middle" class="lbl">입력층 784개</text>
+  <text x="110" y="310" text-anchor="middle">28×28 픽셀</text>
+  <text x="300" y="292" text-anchor="middle" class="lbl">은닉층 16개</text>
+  <text x="300" y="310" text-anchor="middle">짧은 선분?</text>
+  <text x="470" y="292" text-anchor="middle" class="lbl">은닉층 16개</text>
+  <text x="470" y="310" text-anchor="middle">고리 · 직선?</text>
+  <text x="640" y="292" text-anchor="middle" class="lbl">출력층 10개</text>
+  <text x="640" y="310" text-anchor="middle">숫자 0~9</text>
+</svg>
+<figcaption>앞 층의 활성값이 다음 층의 활성값을 결정. 은닉층 아래 설명은 영상이 기대하는 역할이고, 실제로 그렇게 학습되는지는 다음 편에서 확인</figcaption>
+</figure>
+
+<!-- 2 -->
+<h2 id="timeline">2. 영상 흐름</h2>
+<div class="table-wrap">
+<table>
+<thead><tr><th>시간</th><th>내용</th></tr></thead>
+<tbody>
+<tr><td class="t">0:00</td><td>28×28 저해상도로 대충 쓴 3. 픽셀값이 전부 달라도 뇌는 쉽게 알아봄. 같은 일을 하는 프로그램을 짜라고 하면 갑자기 아주 어려운 문제가 됨</td></tr>
+<tr><td class="t">1:07</td><td>신경망을 유행어가 아니라 수학으로 보여 주는 것이 목표. 이번 편은 구조, 다음 편은 학습</td></tr>
+<tr><td class="t">2:05</td><td>신경망에는 변형이 많지만, 가장 단순한 기본형(plain vanilla)만 다룸. 더 강력한 최신 변형을 이해하기 위한 기초</td></tr>
+<tr><td class="t">2:43</td><td><strong>뉴런 = 0~1 사이 숫자 하나를 담는 것</strong>. 입력층 784개가 픽셀 밝기를 담음</td></tr>
+<tr><td class="t">3:46</td><td>출력층 10개, 은닉층 2개(각 16개). 은닉층 크기는 화면에 들어가기 좋은 숫자로 임의로 정한 값</td></tr>
+<tr><td class="t">4:58</td><td>이미 학습된 신경망에 이미지를 넣으면 층마다 특정 패턴이 켜지고, 출력층에서 가장 밝은 뉴런이 답</td></tr>
+<tr><td class="t">5:32</td><td>층 구조가 왜 통할 수 있는지: 숫자를 부분 모양으로 쪼개기</td></tr>
+<tr><td class="t">8:00</td><td>음성 인식도 같은 계층 구조: 소리 → 음절 → 단어 → 문장</td></tr>
+<tr><td class="t">8:51</td><td><strong>가중치</strong>와 가중합. 초록(양수)·빨강(음수) 격자로 선분 감지기 만들기</td></tr>
+<tr><td class="t">10:14</td><td><strong>시그모이드</strong>로 가중합을 0~1 사이로 압축</td></tr>
+<tr><td class="t">10:57</td><td><strong>편향</strong>: 뉴런이 켜지기 위한 기준값</td></tr>
+<tr><td class="t">11:36</td><td>뉴런마다 가중치 784개와 편향 1개. 전체 약 13,000개</td></tr>
+<tr><td class="t">12:42</td><td>가중치를 손으로 하나하나 정하는 사고 실험. 신경망을 블랙박스로 두지 않고 가중치의 의미를 이해하는 것이 중요한 이유</td></tr>
+<tr><td class="t">13:32</td><td>행렬·벡터 표기로 한 줄에 쓰기. 선형대수 시리즈 3장 추천</td></tr>
+<tr><td class="t">15:17</td><td>뉴런은 사실 함수. <strong>신경망 전체도 784개를 받아 10개를 내는 함수 하나</strong></td></tr>
+<tr><td class="t">17:03</td><td>리샤 리(Lisha Li) 인터뷰: 요즘은 시그모이드 대신 ReLU</td></tr>
+</tbody>
+</table>
+</div>
+
+<!-- 3 -->
+<h2 id="neuron">3. 뉴런과 활성값</h2>
+<p>이 영상에서 뉴런은 <strong>0에서 1 사이 숫자 하나를 담는 것</strong>. 그 숫자가 활성값(activation)이고, 값이 클수록 뉴런이 밝게 켜진 것으로 그림.</p>
+<ul>
+<li><strong>입력층</strong>: 28×28 = 784개. 각 뉴런이 픽셀 하나의 밝기를 담음 (검정 0, 흰색 1)</li>
+<li><strong>출력층</strong>: 10개. 각 뉴런이 "이 이미지가 그 숫자일 정도"를 담음</li>
+<li><strong>은닉층</strong>: 그 사이. 숫자를 어떻게 알아보는지는 일단 커다란 물음표</li>
+</ul>
+<p>정확히는 뉴런이 담는 값이 입력 이미지마다 달라지므로, <strong>뉴런은 앞 층의 출력을 받아 0~1 숫자를 내는 함수</strong>로 보는 것이 맞음 (15:17).</p>
+
+<!-- 4 -->
+<h2 id="layers">4. 층을 쌓는 이유</h2>
+<p>사람이 숫자를 알아볼 때는 부분 모양을 조합함.</p>
+<ul>
+<li>9 = 위쪽 고리 + 오른쪽 세로선</li>
+<li>8 = 위쪽 고리 + 아래쪽 고리</li>
+<li>4 = 직선 세 개</li>
+</ul>
+<p>이상적으로는 마지막 은닉층의 뉴런 하나하나가 이런 부분 모양 하나씩을 맡고, 그 앞 은닉층은 고리나 직선을 이루는 짧은 선분을 맡기를 기대함. 그러면 이미지가 들어왔을 때 선분 8~10개 → 위쪽 고리와 세로선 → 숫자 9 순서로 켜짐.</p>
+<p>이렇게 단계별로 추상화하는 구조는 다른 이미지 인식이나 음성 인식(소리 → 음절 → 단어 → 문장)에도 쓸모가 있음.</p>
+<div class="warn"><strong>기대일 뿐</strong>실제로 학습된 신경망이 이렇게 동작하는지는 영상도 답을 미룸. 학습 방법을 본 뒤 다음 편에서 다시 다룸.</div>
+
+<!-- 5 -->
+<h2 id="weights">5. 가중치와 가중합</h2>
+<p>두 번째 층의 뉴런 하나가 "이 영역에 선분이 있는가"를 알아내게 하려면 어떤 다이얼이 필요할까. 답은 <strong>입력층과 이어진 연결선마다 숫자(가중치) 하나</strong>.</p>
+<div class="formula">w₁a₁ + w₂a₂ + w₃a₃ + ⋯ + w₇₈₄a₇₈₄</div>
+<p>가중치 784개를 입력 이미지와 같은 28×28 격자로 그려 보면 이해가 쉬움.</p>
+
+<div class="two">
+<figure>
+<svg viewBox="0 0 200 200" role="img" aria-label="가운데 가로 띠만 초록색 양수 가중치이고 나머지는 0인 격자">
+  <rect x="20" y="20" width="160" height="160" class="grid"/>
+  <path d="M20 40 H180 M20 60 H180 M20 80 H180 M20 100 H180 M20 120 H180 M20 140 H180 M20 160 H180 M40 20 V180 M60 20 V180 M80 20 V180 M100 20 V180 M120 20 V180 M140 20 V180 M160 20 V180" class="grid"/>
+  <rect x="60" y="80" width="80" height="20" class="pos"/>
+</svg>
+<figcaption>관심 영역만 양수, 나머지는 0 → 그 영역 픽셀 밝기의 합</figcaption>
+</figure>
+<figure>
+<svg viewBox="0 0 200 200" role="img" aria-label="가운데 가로 띠는 초록색 양수, 그 위아래는 빨간색 음수 가중치인 격자">
+  <rect x="20" y="20" width="160" height="160" class="grid"/>
+  <rect x="60" y="60" width="80" height="20" class="neg"/>
+  <rect x="60" y="100" width="80" height="20" class="neg"/>
+  <rect x="60" y="80" width="80" height="20" class="pos"/>
+  <path d="M20 40 H180 M20 60 H180 M20 80 H180 M20 100 H180 M20 120 H180 M20 140 H180 M20 160 H180 M40 20 V180 M60 20 V180 M80 20 V180 M100 20 V180 M120 20 V180 M140 20 V180 M160 20 V180" class="grid"/>
+</svg>
+<figcaption>주변에 음수 추가 → 가운데는 밝고 주변은 어두울 때 합이 최대 = 선분 감지기</figcaption>
+</figure>
+</div>
+<p>초록은 양수, 빨강은 음수 가중치이고 색이 진할수록 절댓값이 큼.</p>
+
+<!-- 6 -->
+<h2 id="sigmoid">6. 시그모이드와 편향</h2>
+<h3>시그모이드: 가중합을 0~1로 압축</h3>
+<p>가중합은 어떤 실수든 나올 수 있지만, 활성값은 0~1 사이여야 함. 그래서 실수 전체를 0~1 구간으로 눌러 주는 함수를 씌움. 대표적인 것이 시그모이드(로지스틱 곡선).</p>
+<div class="formula">σ(x) = 1 / (1 + e<sup>−x</sup>)</div>
+
+<figure>
+<svg viewBox="0 0 640 250" role="img" aria-label="시그모이드 곡선: 음수 쪽은 0에, 양수 쪽은 1에 가까워지고 0 근처에서 가파르게 증가. 편향 -10을 더하면 곡선이 오른쪽으로 10만큼 이동">
+  <path d="M30 200 H610 M320 20 V220" class="axis"/>
+  <path d="M30 60 H610" class="axis" stroke-dasharray="3 4"/>
+  <text x="312" y="64" text-anchor="end">1</text>
+  <text x="312" y="214" text-anchor="end">0</text>
+  <text x="80" y="218" text-anchor="middle">−10</text>
+  <text x="560" y="218" text-anchor="middle">10</text>
+  <text x="604" y="194">x</text>
+  <!-- σ(x): x in [-12,12] -> px = 320 + x*25 ; y = 200 - 140*σ -->
+  <polyline class="curve" points="32,200.0 44,200.0 56,200.0 68,200.0 80,200.0 92,200.0 104,200.0 116,200.0 128,200.0 140,199.9 152,199.9 164,199.8 176,199.7 188,199.4 200,199.1 212,198.5 224,197.5 236,195.9 248,193.4 260,189.4 272,183.3 284,174.5 296,162.3 308,147.1 320,130.0 332,112.9 344,97.7 356,85.5 368,76.7 380,70.6 392,66.6 404,64.1 416,62.5 428,61.5 440,60.9 452,60.6 464,60.3 476,60.2 488,60.1 500,60.1 512,60.0 524,60.0 536,60.0 548,60.0 560,60.0 572,60.0 584,60.0 596,60.0 608,60.0"/>
+  <!-- σ(x-10) -->
+  <polyline class="curve2" points="32,200.0 44,200.0 56,200.0 68,200.0 80,200.0 92,200.0 104,200.0 116,200.0 128,200.0 140,200.0 152,200.0 164,200.0 176,200.0 188,200.0 200,200.0 212,200.0 224,200.0 236,200.0 248,200.0 260,200.0 272,200.0 284,200.0 296,200.0 308,200.0 320,200.0 332,200.0 344,200.0 356,200.0 368,200.0 380,199.9 392,199.9 404,199.8 416,199.7 428,199.4 440,199.1 452,198.5 464,197.5 476,195.9 488,193.4 500,189.4 512,183.3 524,174.5 536,162.3 548,147.1 560,130.0 572,112.9 584,97.7 596,85.5 608,76.7"/>
+  <text x="380" y="52" class="lbl">σ(x)</text>
+  <text x="520" y="160" class="lbl">σ(x − 10)</text>
+</svg>
+<figcaption>파란 선은 σ(x). 편향 −10을 더한 주황 선은 가중합이 10을 넘어야 켜짐</figcaption>
+</figure>
+
+<p>아주 작은 음수는 0 근처로, 아주 큰 양수는 1 근처로 가고, 0 근처에서 빠르게 증가함. 따라서 활성값은 "가중합이 얼마나 양수인가"를 나타내는 값.</p>
+
+<h3>편향: 켜지는 기준을 옮기는 숫자</h3>
+<p>가중합이 0보다 클 때가 아니라 10보다 클 때만 뉴런이 켜지게 하고 싶다면, 시그모이드에 넣기 전에 −10 같은 숫자를 더함. 이 숫자가 <strong>편향(bias)</strong>.</p>
+<div class="formula">a = σ(w₁a₁ + w₂a₂ + ⋯ + w₇₈₄a₇₈₄ + b)</div>
+<ul>
+<li><strong>가중치</strong>: 이 뉴런이 어떤 픽셀 패턴을 찾는지</li>
+<li><strong>편향</strong>: 가중합이 얼마나 커야 뉴런이 의미 있게 켜지는지</li>
+</ul>
+
+<!-- 7 -->
+<h2 id="params">7. 매개변수 13,002개</h2>
+<p>뉴런 하나에 가중치 784개와 편향 1개. 같은 층의 모든 뉴런이 앞 층의 모든 뉴런과 연결되므로 전체 개수는 다음과 같음.</p>
+<div class="table-wrap">
+<table>
+<thead><tr><th>연결</th><th>가중치</th><th>편향</th></tr></thead>
+<tbody>
+<tr><td>입력 784 → 은닉 16</td><td>784 × 16 = 12,544</td><td>16</td></tr>
+<tr><td>은닉 16 → 은닉 16</td><td>16 × 16 = 256</td><td>16</td></tr>
+<tr><td>은닉 16 → 출력 10</td><td>16 × 10 = 160</td><td>10</td></tr>
+<tr><td><strong>합계</strong></td><td><strong>12,960</strong></td><td><strong>42</strong></td></tr>
+</tbody>
+</table>
+</div>
+<p>합쳐서 <strong>13,002개</strong>. 영상에서는 "거의 정확히 13,000개"라고 말함. 신경망이 어떻게 동작할지를 바꾸는 다이얼이 이만큼 있다는 뜻이고, <strong>학습이란 컴퓨터가 이 숫자들의 좋은 값을 찾게 하는 것</strong>.</p>
+
+<!-- 8 -->
+<h2 id="matrix">8. 행렬로 한 줄에 쓰기</h2>
+<p>뉴런마다 가중합을 따로 쓰면 식이 너무 길어짐. 그래서 이렇게 정리함.</p>
+<ul>
+<li>한 층의 활성값을 세로 벡터 <code>a⁽⁰⁾</code>로</li>
+<li>가중치를 행렬 <code>W</code>로. 행 하나가 다음 층 뉴런 하나로 들어오는 연결 전체</li>
+<li>편향을 벡터 <code>b</code>로</li>
+<li>시그모이드는 결과 벡터의 원소 하나하나에 적용</li>
+</ul>
+<div class="formula">a⁽¹⁾ = σ( W a⁽⁰⁾ + b )</div>
+<p>행렬·벡터 곱의 결과에서 원소 하나가 곧 뉴런 하나의 가중합. 이렇게 쓰면 식이 짧아지고, 라이브러리가 행렬곱을 아주 잘 최적화해 두었기 때문에 코드도 간단하고 빨라짐.</p>
+
+<h3>NumPy로 옮기면</h3>
+<p>학습하지 않은 무작위 가중치라 답은 의미가 없고, 구조와 매개변수 개수만 확인하는 코드.</p>
+<pre><code>import numpy as np
+
+rng = np.random.default_rng(0)
+sizes = [784, 16, 16, 10]
+weights = [rng.normal(0, 1, (n_out, n_in)) for n_in, n_out in zip(sizes[:-1], sizes[1:])]
+biases = [rng.normal(0, 1, n_out) for n_out in sizes[1:]]
+
+def sigmoid(z):
+    return 1 / (1 + np.exp(-z))
+
+a = rng.uniform(0, 1, 784)          <span class="c"># 28×28 이미지 대신 무작위 밝기</span>
+for W, b in zip(weights, biases):
+    a = sigmoid(W @ a + b)          <span class="c"># a⁽ˡ⁺¹⁾ = σ(W a⁽ˡ⁾ + b)</span>
+
+print(a.argmax())                   <span class="c"># 가장 밝은 출력 뉴런 = 신경망의 답</span>
+print(sum(W.size + b.size for W, b in zip(weights, biases)))  <span class="c"># 13002</span></code></pre>
+<p>결국 <strong>신경망 전체가 함수 하나</strong>. 숫자 784개를 받아 10개를 내고, 매개변수 13,002개와 행렬곱·시그모이드의 반복으로 이루어짐. 영상은 이 함수가 이 정도로 복잡해 보이는 것이 오히려 다행이라고 말함. 더 단순했다면 숫자를 알아보리라고 기대하기 어려웠을 테니.</p>
+
+<!-- 9 -->
+<h2 id="relu">9. 시그모이드 대신 ReLU</h2>
+<p>영상 끝의 리샤 리 인터뷰. 초기 신경망은 뉴런이 꺼짐/켜짐 두 상태라는 생물학적 비유 때문에 시그모이드를 썼지만, 요즘은 거의 쓰지 않음.</p>
+<div class="formula">ReLU(a) = max(0, a)</div>
+
+<figure>
+<svg viewBox="0 0 640 220" role="img" aria-label="시그모이드는 0과 1 사이의 S자 곡선, ReLU는 0 이하에서 0이고 0 이상에서 직선">
+  <path d="M30 180 H610 M320 20 V200" class="axis"/>
+  <polyline class="curve" points="30,180.0 59,180.0 88,180.0 117,179.9 146,179.8 175,179.3 204,178.2 233,175.3 262,168.1 291,153.1 320,130.0 349,106.9 378,91.9 407,84.7 436,81.8 465,80.7 494,80.2 523,80.1 552,80.0 581,80.0 610,80.0"/>
+  <polyline class="curve2" points="30,180 320,180 470,30"/>
+  <text x="560" y="72" class="lbl">시그모이드</text>
+  <text x="480" y="44" class="lbl">ReLU</text>
+  <text x="604" y="174">x</text>
+</svg>
+<figcaption>ReLU는 기준(0)을 넘으면 입력을 그대로, 못 넘으면 0</figcaption>
+</figure>
+<ul>
+<li>시그모이드로는 학습이 매우 어려운 경우가 있었음</li>
+<li>ReLU를 써 보니 아주 깊은 신경망에서도 잘 학습됨</li>
+<li>기준을 넘으면 켜지고 못 넘으면 꺼진다는 생물학적 비유를 더 단순하게 만든 것</li>
+</ul>
+
+<!-- 10 -->
+<h2 id="study">10. 01 예제와 연결</h2>
+<p><code>scripts/ai_chat_study/01_gradient_descent.py</code>는 이 신경망의 아주 작은 버전.</p>
+<div class="table-wrap">
+<table>
+<thead><tr><th></th><th>01 예제</th><th>영상의 신경망</th></tr></thead>
+<tbody>
+<tr><td>식</td><td><code>w * x + b</code></td><td><code>σ(W @ a + b)</code>를 3번 반복</td></tr>
+<tr><td>다이얼(매개변수)</td><td>2개 (w, b)</td><td>13,002개</td></tr>
+<tr><td>입력 → 출력</td><td>숫자 1개 → 1개</td><td>784개 → 10개</td></tr>
+<tr><td>활성화 함수</td><td>없음 (직선)</td><td>시그모이드 (요즘은 ReLU)</td></tr>
+<tr><td>기울기 계산</td><td>미분식을 손으로 직접 씀</td><td>손으로는 불가능. 역전파로 계산 (3장)</td></tr>
+</tbody>
+</table>
+</div>
+<div class="note"><strong>다음 편</strong>2장 "Gradient descent, how neural networks learn"이 01 예제와 같은 경사하강법을 이 13,002개 다이얼에 적용하는 내용.</div>
+
+<footer>영상 원본 자막을 바탕으로 정리. 그림은 영상 화면을 참고해 다시 그림.</footer>
+
+</main>
+</body>
+</html>
