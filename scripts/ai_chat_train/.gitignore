@@ -1,0 +1,6 @@
+# generate_dataset.py 가 다시 만드는 산출물
+data/
+# 학습 환경·받은 모델·학습 결과
+.venv/
+runs/
+__pycache__/
