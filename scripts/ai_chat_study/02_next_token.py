@@ -9,7 +9,7 @@ from collections import Counter, defaultdict
 
 from common import ROOT
 
-cases = json.loads((ROOT / "HubDevTests/Fixtures/ai_chat_eval_en.json").read_text())
+cases = json.loads((ROOT / "scripts/fixtures/ai_chat_eval_en.json").read_text())
 counts = defaultdict(Counter)
 for case in cases:
     words = ["<s>"] + case["q"].split() + ["</s>"]

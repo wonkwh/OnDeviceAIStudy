@@ -16,7 +16,7 @@ for text in ("Show me yesterday's video", "어제 영상 보여줘"):
 
 # 앱이 전용 모델에 보내는 것과 같은 프롬프트
 fixture = json.loads(
-    (ROOT / "HubDevTests/Fixtures/ai_chat_parser_prompt_tokens.json").read_text())
+    (ROOT / "scripts/fixtures/ai_chat_parser_prompt_tokens.json").read_text())
 user = f"{fixture['today']}\nquestion: {fixture['question']}"
 prompt = chat_prompt(tokenizer, SYSTEM_PROMPT, user)
 print("\n--- 채팅 템플릿을 거친 글 ---")
