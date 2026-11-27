@@ -7,7 +7,8 @@
 AI 를 전혀 모르는 상태에서 시작해, 이 브랜치의 AI 채팅 코드(Foundation Models · MLX · LoRA · RAG)를
 한 줄씩 설명할 수 있게 되는 것이 목표다. 15단계이고, 단계마다 네 가지가 있다.
 
-- **읽을 것** — 개념을 배우는 자료. 한국어 자료를 먼저 적었다. "책"은 아래 "책과 함께 보기"의 그 책이다.
+- **읽을 것** — 개념을 배우는 자료. 한국어 자료를 먼저 적었다. "책"은 아래 "책과 함께 보기"의 그 책이고,
+  "HF"는 "Hugging Face Learn 과 함께 보기"의 무료 강좌, "DW"는 "Datawhale 자료와 함께 보기"의 중국어 자료다.
 - **돌려 볼 것** — 20~60줄짜리 코드. 아래에 적힌 출력은 2026-11-16 에 이 저장소에서 실제로 돌려 얻은 것이다.
 - **우리 코드** — 그 개념이 이 브랜치의 어느 파일에 있는지.
 - **스스로 답해 볼 것** — 답을 못 하면 그 단계를 다시 본다. 답은 접어 두었다.
@@ -73,6 +74,35 @@ AI 를 전혀 모르는 상태에서 시작해, 이 브랜치의 AI 채팅 코�
 책을 따라 읽는다면 순서는 1장 → 2장 → 3장(골라서) → 4.1 → 5장(골라서) → 6장 → 7장 → 9.1·9.3 → 10장(골라서) → 13.3 이고,
 각 장을 읽은 뒤 표에 적힌 단계의 실습을 돌린다.
 
+## Hugging Face Learn 과 함께 보기
+
+[huggingface.co/learn](https://huggingface.co/learn) 의 무료 강좌(영어) 가운데 이 프로젝트에 맞는 절만 단계별 "HF" 줄에 적었다.
+책과 같이 실습은 코랩·PyTorch·transformers 로 한다. 개념만 가져오고 코드는 이 문서의 Mac 실습을 돌린다.
+
+| 강좌 | 쓰는 절 | 도움이 되는 단계 | 건너뛰는 것 |
+|---|---|---|---|
+| [LLM Course](https://huggingface.co/learn/llm-course/chapter1/1) | 1.4 · 1.8 · 2.2 · 2.4 · 3.4 · 3.5 · 6.5 · 11장 | 1~4 · 8~10 | 5장(Datasets) · 7장(고전 NLP) · 9~10장(Gradio·Argilla) · 12장(GRPO 추론 모델) |
+| [smol-course](https://huggingface.co/learn/smol-course/unit0/1) | Unit 1 (2 · 3 · 3a) | 3 · 8 · 10 | Unit 2(DPO) · Unit 3(VLM) |
+| [Agents Course](https://huggingface.co/learn/agents-course/unit0/introduction) | Unit 1 의 LLM · 메시지 절, Bonus 1 의 함수 호출 | 2 · 3 · 5 | Unit 2~4(에이전트 프레임워크) |
+| [Cookbook](https://huggingface.co/learn/cookbook/en/index) | structured_generation · advanced_rag · llm_judge · JSON 미세조정 | 5 · 6 · 9 · 10 | 서버·벡터 DB·멀티모달 예제 |
+
+LLM Course 11장(채팅 템플릿 → SFT → LoRA → 평가)이 5~10단계를 한 흐름으로 다룬다. 10단계를 마친 뒤 한 번에 읽으면 복습이 된다.
+
+## Datawhale 자료와 함께 보기
+
+중국 오픈소스 학습 모임 Datawhale 의 GitHub 저장소 세 개에서 맞는 글만 단계별 "DW" 줄에 적었다. **모두 중국어**라 번역기를 켜고 읽는다.
+코드는 대부분 Linux·NVIDIA GPU 기준이지만, self-llm 의 `models_mlx` 는 우리와 같은 Mac·mlx-lm 이다.
+
+| 저장소 | 성격 | 쓰는 글 | 도움이 되는 단계 | 건너뛰는 것 |
+|---|---|---|---|---|
+| [happy-llm](https://github.com/datawhalechina/happy-llm) | 「처음부터 만드는 대형 모델」. 원리를 코드로 직접 짠다 | 2장 · 4.2 · 5.2 · 6.2–6.3 · 7.1–7.3 | 2 · 3 · 6 · 8~10 | 1·3장(고전 NLP·BERT 계열), 5.1·5.3(LLaMA2 사전학습), 6.1(분산 학습), 8장(강화학습) |
+| [llm-cookbook](https://github.com/datawhalechina/llm-cookbook) | Andrew Ng 의 DeepLearning.AI 강좌 중국어판. API 로 앱을 만드는 쪽 | C2(시스템 만들기) 2·3·7·9·10, C4(문서 질의) 3·5, 선택 과목 Finetuning | 3 · 5 · 6 · 9 · 10 | C1(프롬프트 작성)·C3(LangChain), 서버 API 전제 예제 |
+| [self-llm](https://github.com/datawhalechina/self-llm) | 「오픈소스 대형 모델 사용 안내서」. 모델별 배포·미세조정 따라 하기 | `models/Qwen3` 05·07·08, `models_mlx` | 3 · 4 · 8 · 10 | 다른 모델 폴더, vLLM·AMD·Ascend 배포 |
+
+**가장 가까운 글 두 개.** self-llm 의 [Qwen3 08 「0.6B 작은 모델은 어디에 쓰나」](https://github.com/datawhalechina/self-llm/blob/master/models/Qwen3/08-Qwen3_0_6B%E7%9A%84%E5%B0%8F%E6%A8%A1%E5%9E%8B%E6%9C%89%E4%BB%80%E4%B9%88%E7%94%A8.md)는 Qwen3-0.6B 를 LoRA 로 미세조정해
+문장에서 JSON 칸을 뽑는다. 모델 크기와 할 일이 우리와 같다(도구만 transformers·peft).
+[models_mlx](https://github.com/datawhalechina/self-llm/tree/master/models_mlx)는 mlx-lm 으로 Qwen3 을 Mac 에서 돌리는 노트북이라 4단계 실습과 도구가 같다.
+
 ## 0단계 — 준비
 
 Python 을 처음 쓴다면 문법부터 본다. 변수·리스트·딕셔너리·반복문·함수까지만 알면 실습 코드를 읽을 수 있다.
@@ -119,6 +149,8 @@ Apple silicon Mac 이 필요하다.
   [MLX 문서의 Linear Regression 예제](https://ml-explore.github.io/mlx/build/html/examples/linear_regression.html) (같은 일을 MLX 로)
 - 책: 1.1 딥러닝과 언어 모델링, 3.4.3 트레이너 API를 사용하지 않고 학습하기(학습 루프).
   경사하강법을 제목으로 내건 절은 목차에 없다. 원리는 위 영상으로 먼저 본다.
+- HF: [LLM Course 3.4 A full training loop](https://huggingface.co/learn/llm-course/chapter3/4) — 손실 → `backward` → optimizer 한 걸음의 반복을
+  transformers 로 쓴 것이다. 실습의 `for` 루프와 견주어 본다.
 
 **돌려 볼 것** `01_gradient_descent.py`
 
@@ -156,6 +188,10 @@ step 200  loss 0.0019  w 1.993  b 0.993
   teddylee777/machine-learning 의 `02-PyTorch/24-seq2seq-with-attention-chatbot.ipynb` (한국어, 어텐션 실습)
 - 책: 1.1.3 언어 모델링, 1.2 언어 모델이 챗GPT가 되기까지, 2장 전체 — 특히 2.3 어텐션, 2.6 디코더, 2.7.2 GPT,
   2.8.1 인과적 언어 모델링. 실습의 bigram 이 "직전 낱말만 본다"는 한계를 어텐션이 어떻게 넘는지가 2장이다.
+- HF: [Agents Course — What are LLMs?](https://huggingface.co/learn/agents-course/unit1/what-are-llms) — 다음 토큰 예측, EOS 에서 멈추기, 디코딩 방식.
+  [LLM Course 1.4 How do Transformers work?](https://huggingface.co/learn/llm-course/chapter1/4) — 인과적 언어 모델링과 디코더 구조.
+- DW: [happy-llm 2장 Transformer 구조](https://github.com/datawhalechina/happy-llm/blob/main/docs/chapter2/%E7%AC%AC%E4%BA%8C%E7%AB%A0%20Transformer%E6%9E%B6%E6%9E%84.md) 의 2.1.5 마스크 자기 어텐션 — "앞 토큰만 본다"를 위삼각 행렬 마스크로
+  구현한다. bigram(직전 하나)과 LLM(앞 전부)의 차이를 코드로 본다.
 
 **돌려 볼 것** `02_next_token.py` — 평가셋 질문 112개에서 "이 낱말 다음에 무엇이 왔나"를 센다.
 
@@ -193,6 +229,14 @@ temperature 1: Show the location of the morning commute video from yesterday eve
 - 모델 카드: [Qwen/Qwen3-0.6B](https://huggingface.co/Qwen/Qwen3-0.6B) — `enable_thinking` 설명이 있다.
 - 책: 2.2.1 토큰화, 2.2.2 토큰 임베딩으로 변환하기, 3.3.2 토크나이저 활용하기.
   채팅 템플릿을 제목으로 내건 절은 목차에 없다. 위 Hugging Face 문서로 본다.
+- HF: [Agents Course — Messages and Special Tokens](https://huggingface.co/learn/agents-course/unit1/messages-and-special-tokens) —
+  `<|im_start|>` 같은 특수 토큰과 템플릿이 모델마다 다른 이유. 실습 출력과 같은 모양을 설명한다.
+  [LLM Course 11.2 Chat Templates](https://huggingface.co/learn/llm-course/chapter11/2), [smol-course 1.2 Chat Templates](https://huggingface.co/learn/smol-course/unit1/2) —
+  `apply_chat_template` 과 학습 데이터에 템플릿을 입히는 법.
+- DW: [self-llm Qwen3 07 「Qwen3 Think 해부」](https://github.com/datawhalechina/self-llm/blob/master/models/Qwen3/07-Qwen3-Think-%E8%A7%A3%E5%AF%86-Blog.md) — Qwen3 의 Jinja 채팅 템플릿을 펼쳐 `enable_thinking` 이
+  빈 `<think></think>` 를 넣는 원리를 보여 준다. 실습 출력 끝의 그 두 줄이다.
+- DW: [happy-llm 5장](https://github.com/datawhalechina/happy-llm/blob/main/docs/chapter5/%E7%AC%AC%E4%BA%94%E7%AB%A0%20%E5%8A%A8%E6%89%8B%E6%90%AD%E5%BB%BA%E5%A4%A7%E6%A8%A1%E5%9E%8B.md) 의 5.2 Tokenizer 훈련 — BPE·WordPiece·Unigram 비교 후 BPE 토크나이저를 직접 학습한다.
+  [llm-cookbook C2-2 언어 모델·대화 형식·토큰](https://github.com/datawhalechina/llm-cookbook/blob/main/docs/C2/2.%20%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%EF%BC%8C%E6%8F%90%E9%97%AE%E8%8C%83%E5%BC%8F%E4%B8%8E%20Token%20Language%20Models,%20the%20Chat%20Format%20and%20Tokens.md) — 토큰과 system/user/assistant 형식의 입문.
 
 **돌려 볼 것** `03_tokens_and_template.py`
 
@@ -253,6 +297,11 @@ question: Show me the video from yesterday at 9:30 am<|im_end|>
   `04-mlx-lm-cli-generation-and-caching.md`
 - 책: 3.5 모델 추론하기(3.5.2 직접 추론하기는 제목으로 보아 이 실습과 같은 일을 허깅페이스로 하는 절이다),
   7.1.1 언어 모델이 언어를 생성하는 방법, 7.1.2 중복 연산을 줄이는 KV 캐시.
+- HF: [LLM Course 2.2 Behind the pipeline](https://huggingface.co/learn/llm-course/chapter2/2) — 토크나이저 → 모델 → logits → softmax.
+  실습의 `model(...)` 한 줄 앞뒤가 이것이다.
+  [LLM Course 1.8 Inference with LLMs](https://huggingface.co/learn/llm-course/chapter1/8) — prefill·decode 두 단계, temperature, KV 캐시.
+- DW: [self-llm `models_mlx`](https://github.com/datawhalechina/self-llm/tree/master/models_mlx) — [MLX 소개](https://github.com/datawhalechina/self-llm/blob/master/models_mlx/docs/MLX-LM_Intro.md)(통합 메모리, vLLM 과의 구조 차이)와
+  [Qwen3 MLX 배포 노트북](https://github.com/datawhalechina/self-llm/blob/master/models_mlx/notebooks/Qwen3_MLX_%E9%83%A8%E7%BD%B2%E4%B8%8E%E4%BA%A4%E4%BA%92.ipynb). 같은 mlx-lm 으로 Qwen3 을 불러 temperature·사고 모드를 바꿔 본다.
 
 **돌려 볼 것** `04_inference.py`
 
@@ -290,6 +339,13 @@ The capital of France is Paris, and the capital of
 - 깊이: [XGrammar 저장소](https://github.com/mlc-ai/xgrammar), [문서](https://xgrammar.mlc.ai/docs/),
   [논문](https://arxiv.org/abs/2411.15100) — 앱의 `MLXGuidedGeneration` 이 안에서 쓰는 엔진이다.
 - 책: 9.3 데이터 검증 — 출력을 받은 뒤에 검사하는 방식이다. 쓰는 동안 막는 제약 디코딩은 목차에 없다.
+- HF: [Cookbook — Structured generation](https://huggingface.co/learn/cookbook/en/structured_generation) — Outlines 의 문법(grammar)으로 JSON 형식을
+  강제하는 예제. 책에 없는 제약 디코딩을 서버 쪽 도구로 보여 준다.
+- HF(택하지 않은 쪽): [Agents Course — What is Function Calling?](https://huggingface.co/learn/agents-course/bonus-unit1/what-is-function-calling) —
+  모델이 함수를 고르는 방식. 우리는 작은 모델에 "도구 고르기" 대신 "정해진 칸 채우기"를 시킨다(계획 문서 PhoneClaw 절).
+- DW: [llm-cookbook C2-3 입력 분류](https://github.com/datawhalechina/llm-cookbook/blob/main/docs/C2/3.%20%E8%AF%84%E4%BC%B0%E8%BE%93%E5%85%A5-%E5%88%86%E7%B1%BB%20Classification.md) — 질문을 정해진 분류로 나눠 JSON 키로 받는다. 우리 intent 칸과 같은 일을
+  제약 없이 프롬프트로만 한다. [C2-7 출력 검사](https://github.com/datawhalechina/llm-cookbook/blob/main/docs/C2/7.%20%E6%A3%80%E6%9F%A5%E7%BB%93%E6%9E%9C%20Check%20Outputs.md) — 보여 주기 전에 출력을 검사한다(`HubQueryMapper` 의 자리).
+- DW(택하지 않은 쪽): [happy-llm 7장](https://github.com/datawhalechina/happy-llm/blob/main/docs/chapter7/%E7%AC%AC%E4%B8%83%E7%AB%A0%20%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%BA%94%E7%94%A8.md) 의 7.3 Tiny-Agent — 모델이 도구 함수를 골라 부르는 에이전트를 직접 짠다.
 - 비교(한국어): [teddylee777/langchain-kr `03-OutputParser`](https://github.com/teddylee777/langchain-kr/tree/main/03-OutputParser) —
   출력을 받은 뒤에 고치는 방식이다. 우리는 쓰는 동안 막는 방식이라 접근이 다르다. 서버 모델(API 키 필요)을 쓰는 예제다.
 - 이 Mac 에 있는 자료: `~/.claude/skills/apple-mlx/references/part-13-mlx-swift/references/03-fm-bridge-and-guided-generation.md`
@@ -342,6 +398,14 @@ The capital of France is Paris, and the capital of
 - 책: 1.3.4 RAG 소개, 9.1 검색 증강 생성(9.1.2 프롬프트에 검색 결과 통합이 `HubGuidePrompt` 가 하는 일이다),
   10.1.3–10.1.4 백오브워즈·TF-IDF, 10.4.1 BM25, 10.5.1 BM25 구현하기 — 우리 검색(bigram + IDF)과 같은 계열이다.
   10.2–10.3 은 임베딩 방식으로, 우리가 택하지 않은 표준 방식을 알기 위해 훑는다. 11·12장은 건너뛴다.
+- HF(택하지 않은 쪽): [Cookbook — Advanced RAG](https://huggingface.co/learn/cookbook/en/advanced_rag) — 조각내기·임베딩·재순위(rerank)를 갖춘
+  표준 RAG. 조각내기 절은 우리에게도 해당하고, 임베딩·재순위는 쓰지 않는 쪽이다.
+- DW: [llm-cookbook C4-3 문서 분할](https://github.com/datawhalechina/llm-cookbook/blob/main/docs/C4/3.%20%E6%96%87%E6%A1%A3%E5%88%86%E5%89%B2%20Splitting.md) — 글자·토큰·Markdown 제목 기준 분할. 우리 프로토콜 문서도 Markdown 이다.
+  [C4-5 검색](https://github.com/datawhalechina/llm-cookbook/blob/main/docs/C4/5.%20%E6%A3%80%E7%B4%A2%20Retrieval.md) 은 임베딩 검색의 변형들이다.
+- DW(택하지 않은 쪽): [happy-llm 7장](https://github.com/datawhalechina/happy-llm/blob/main/docs/chapter7/%E7%AC%AC%E4%B8%83%E7%AB%A0%20%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%BA%94%E7%94%A8.md) 의 7.2 Tiny-RAG — 임베딩·벡터 저장소로 RAG 를 처음부터 짠다.
+- 참고(택하지 않은 쪽): [NatashaTheRobot — How to Train Your Own On-Device Search Model](https://www.natashatherobot.com/p/train-your-own-on-device-search) — 정해진 목록(설정 151개)에서
+  고르는 검색을 25MB 임베딩 모델(all-MiniLM-L6-v2)로 한다. 우리 `SettingsGuide.search` 는 키워드가 글자 그대로 있어야 찾지만,
+  이 방식은 뜻이 같은 다른 말("screen lights out" → Auto-Lock)도 찾는다. 영어 전용이다.
 
 위 노트북은 LangChain 과 서버 모델을 쓴다. 우리 코드는 LangChain 도 임베딩도 쓰지 않는다. 개념(조각내기 → 검색 → 붙이기)만 가져온다.
 
@@ -392,6 +456,8 @@ To lower the impact sensitivity while parked, go to the **parksensorsen** settin
 - 참고: [safetensors](https://github.com/huggingface/safetensors) — 가중치 파일 형식. 맨 앞에 JSON 머리말이 있어 실습에서 그것만 읽는다.
 - 책: 5.1.1 딥러닝 모델의 데이터 타입, 5.1.2 양자화로 모델 용량 줄이기, 5.5.1 4비트 양자화와 2차 양자화,
   7.2 양자화로 모델 용량 줄이기. 7.2 의 도구(비츠앤바이츠·GPTQ·AWQ)는 GPU 서버용이라 MLX 와 다르다. 원리만 가져온다.
+- HF: [LLM Course 2.8 Optimized Inference Deployment](https://huggingface.co/learn/llm-course/chapter2/8) — 서버 추론 도구에서 양자화가 쓰이는 자리.
+  서버용이라 훑기만 한다.
 - 이 Mac 에 있는 자료: `~/.claude/skills/apple-mlx/references/part-12-mlx-python/references/03-quantization.md`
 
 **돌려 볼 것** `07_quantization.py`
@@ -441,6 +507,11 @@ To lower the impact sensitivity while parked, go to the **parksensorsen** settin
   다른 도구(Unsloth)로 하는 미세조정. 데이터 형식과 흐름이 비슷하다.
 - 책: 4.1 사전 학습과 지도 미세 조정, 5.4 LoRA 전체(5.4.2 LoRA 설정 살펴보기가 우리 설정 파일의 rank·scale 에 해당한다),
   5.5 QLoRA — 10단계에서 4비트 base 에 어댑터를 학습하는 것이 이 방식이다.
+- HF: [LLM Course 11.4 LoRA](https://huggingface.co/learn/llm-course/chapter11/4), [smol-course 1.3a LoRA and PEFT](https://huggingface.co/learn/smol-course/unit1/3a) —
+  rank 의 뜻, 어댑터를 base 에 합치기(merge). 우리는 합치지 않고 따로 끼운다(`model.perform(with:perform:)`).
+- DW: [happy-llm 6장](https://github.com/datawhalechina/happy-llm/blob/main/docs/chapter6/%E7%AC%AC%E5%85%AD%E7%AB%A0%20%E5%A4%A7%E6%A8%A1%E5%9E%8B%E8%AE%AD%E7%BB%83%E6%B5%81%E7%A8%8B%E5%AE%9E%E8%B7%B5.md) 의 6.3 고효율 미세조정 — 6.3.3 저랭크 원리, 6.3.4 LoRA 층을 직접 바꿔 끼우는 코드, 6.3.5 peft.
+  [4장](https://github.com/datawhalechina/happy-llm/blob/main/docs/chapter4/%E7%AC%AC%E5%9B%9B%E7%AB%A0%20%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B.md) 의 4.2 Pretrain·SFT·RLHF 는 책 4.1 과 같은 내용이다.
+  [self-llm Qwen3 05 LoRA](https://github.com/datawhalechina/self-llm/blob/master/models/Qwen3/05-Qwen3-8B-LoRA%E5%8F%8ASwanLab%E5%8F%AF%E8%A7%86%E5%8C%96%E8%AE%B0%E5%BD%95.md) — peft 로 Qwen3 에 LoRA 를 걸고 어댑터를 불러 추론까지 한다.
 - 이 Mac 에 있는 자료: `~/.claude/skills/apple-mlx/references/part-12-mlx-python/references/06-finetuning-and-porting-models.md`
 
 **돌려 볼 것** `08_lora.py`
@@ -496,6 +567,13 @@ B 가 0 이면 출력이 원래와 같다: True
 - 우리 기록: 설계 문서의 T1·T2·T3 기록 (평가셋을 어떻게 만들었고 무엇을 조심했는지)
 - 책: 6.2 성능 평가 파이프라인 준비하기(6.2.2 평가 데이터셋 구축), 13.2.3 LLM 평가의 어려움, 13.3 LLM 평가하기.
   장 소개에 따르면 13장은 정답이 하나로 정해지지 않는 평가의 어려움을 다룬다. 우리는 12칸의 정답 비교라 13.3.1 정량적 지표 쪽에 해당한다.
+- HF: [LLM Course 11.5 Evaluation](https://huggingface.co/learn/llm-course/chapter11/5) — 공개 벤치마크만으로 부족해 도메인 평가셋을 따로 만드는 이유.
+  우리 `eval_independent_en.json` 이 그 도메인 평가셋이다.
+- HF(비교): [Cookbook — LLM-as-a-judge](https://huggingface.co/learn/cookbook/en/llm_judge) — 다른 모델에게 채점시키는 방식.
+  안내 답변(6단계)처럼 정답이 하나가 아닌 출력을 잴 때 쓴다.
+- DW: [llm-cookbook C2-9 평가(상) 정답이 있을 때](https://github.com/datawhalechina/llm-cookbook/blob/main/docs/C2/9.%20%E8%AF%84%E4%BC%B0%EF%BC%88%E4%B8%8A%EF%BC%89%20Evaluation-part1.md) — 어려운 문항 추가 → 지시문 수정 → 회귀 테스트 → 개발셋 정답률.
+  우리 평가 방식과 같은 순서다. [C2-10 평가(하) 정답이 없을 때](https://github.com/datawhalechina/llm-cookbook/blob/main/docs/C2/10.%20%E8%AF%84%E4%BC%B0%EF%BC%88%E4%B8%8B%EF%BC%89Evaluation-part2.md) 는 모델에게 채점시키는 쪽이다.
+- DW: [happy-llm 7장](https://github.com/datawhalechina/happy-llm/blob/main/docs/chapter7/%E7%AC%AC%E4%B8%83%E7%AB%A0%20%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%BA%94%E7%94%A8.md) 의 7.1 평가 — 공개 평가셋과 순위표. 우리가 도메인 평가셋을 따로 만든 이유의 배경으로 훑는다.
 
 **돌려 볼 것** `09_evaluate.py` (약 2분)
 
@@ -540,6 +618,19 @@ intent 77/80 full 76/80 (95%) invalid 0 avg 0.53s
   6.1.3 합성 데이터 활용 ↔ `generate_dataset.py`, 6.3.1 기초 모델 평가하기 ↔ 아래 표의 "학습 전 0/80",
   6.3.4 기초 모델 변경 ↔ Gemma 270M 과 Qwen3 0.6B 비교, 6.3.5 모델 성능 비교 ↔ 설계 문서 T3 의 표.
   1.3.2 sLLM 도 함께 본다.
+- HF: [LLM Course 3.5 Understanding Learning Curves](https://huggingface.co/learn/llm-course/chapter3/5) — train/val 손실 곡선 읽기와 과적합 신호.
+  아래 학습 로그의 `val` 줄을 이 눈으로 본다.
+- HF: [LLM Course 11.3 Fine-Tuning with SFTTrainer](https://huggingface.co/learn/llm-course/chapter11/3), [smol-course 1.3 Supervised Fine-Tuning](https://huggingface.co/learn/smol-course/unit1/3) —
+  같은 지도 미세조정을 TRL 로 한다. 도구는 다르고 데이터 모양(system · user · assistant)은 같다.
+- HF: [Cookbook — Fine-tuning LLM to Generate … in JSON Format](https://huggingface.co/learn/cookbook/en/fine_tuning_llm_to_generate_persian_product_catalogs_in_json_format) —
+  QLoRA 로 작은 모델이 JSON 을 쓰게 학습한다. 목적이 우리와 가깝다.
+- DW: [self-llm Qwen3 08 「0.6B 작은 모델은 어디에 쓰나」](https://github.com/datawhalechina/self-llm/blob/master/models/Qwen3/08-Qwen3_0_6B%E7%9A%84%E5%B0%8F%E6%A8%A1%E5%9E%8B%E6%9C%89%E4%BB%80%E4%B9%88%E7%94%A8.md) — **Qwen3-0.6B** 를 LoRA 로 미세조정해 문장에서
+  이름·주소 같은 JSON 칸을 뽑는다. 모델과 할 일이 우리와 가장 가깝다. 학습 데이터를 합성한 점도 같다(그쪽은 큰 모델로, 우리는 스크립트로).
+- DW: [happy-llm 6장](https://github.com/datawhalechina/happy-llm/blob/main/docs/chapter6/%E7%AC%AC%E5%85%AD%E7%AB%A0%20%E5%A4%A7%E6%A8%A1%E5%9E%8B%E8%AE%AD%E7%BB%83%E6%B5%81%E7%A8%8B%E5%AE%9E%E8%B7%B5.md) 의 6.2 지도 미세조정 — 6.2.1 Pretrain 과 SFT 의 차이, 6.2.2 역할 표시·특수 토큰을 붙여 학습 데이터 만들기.
+  [llm-cookbook 선택 과목 Finetuning LLMs](https://github.com/datawhalechina/llm-cookbook/tree/main/content/%E9%80%89%E4%BF%AE-Finetuning%20Large%20Language%20Models) — 왜 미세조정하나, 데이터 준비, 학습, 평가와 반복(노트북).
+- 참고: 6단계의 [NatashaTheRobot 글](https://www.natashatherobot.com/p/train-your-own-on-device-search) 중 학습 과정 — 큰 모델이 검색어를 합성하고, 다른 모델(Claude)이 정답을 붙인 1,006개로
+  큰 모델을 미세조정한 뒤, 그 모델이 검색어마다 붙인 확률(예: Auto-Lock 70%, Brightness 14%)을 작은 모델에 가르친다(증류).
+  우리는 스크립트가 정답 하나를 붙인다. 테스트가 200개뿐이고 정답도 모델이 붙였다는 점을 감안해 읽는다.
 
 **돌려 볼 것** 명령 세 개다. `Scripts/ai_chat_train` 에서 돌린다.
 
@@ -821,5 +912,12 @@ xcodebuild test -project Hub.xcodeproj -scheme Hub-Dev \
   예제라 우리 코드와 도구가 다르다. 개념을 배우는 용도다.
 - 온디바이스(MLX · Foundation Models)는 한국어 자료가 적어 Apple 의 WWDC25 세션과 공식 문서, mlx-lm 소스를 적었다.
 - **「LLM을 활용한 실전 AI 애플리케이션 개발」** 은 목차와 장별 소개만 보고 대응시켰다. 본문은 확인하지 못했다.
+- **Hugging Face Learn** 은 강좌 목차(GitHub 의 `_toctree.yml`)로 절을 고르고, 2026-11-27 에 각 페이지가 열리고
+  설명에 적은 주제어(예: prefill, merge, grammar)가 본문에 있는 것까지 확인했다. 본문 전체를 읽지는 않았다.
+- **Datawhale** 은 happy-llm · llm-cookbook · self-llm 세 저장소의 파일 목록과 각 글의 절 제목으로 골랐고, 인용한 글
+  일부(Qwen3 07·08, C2-3·7·9·10, C4-3, MLX 소개)는 앞부분을 읽어 내용을 확인했다. 링크는 2026-11-27 에 열리는 것을 확인했다.
+  처음 요청에 있던 `hello-llm` 저장소는 datawhalechina 에 없어 이름이 가장 가까운 happy-llm 으로 대신했다.
+- **NatashaTheRobot 글**(2026-11-23)은 2026-11-27 에 본문 전체를 읽었다. 비용·정답률은 저자의 주장이고 따로 확인하지 않았다.
+  글 끝에서 파는 유료 Starter 는 넣지 않았다.
 - 링크는 2026-11-16 에 열리는 것을 확인했다. 위키독스 링크만 자동 확인이 막혀 langchain-kr 의 README 에 적힌 주소를 그대로 옮겼다.
   유튜브 영상은 제목·채널·길이를 확인했다. 영상과 Apple 자료는 영어다.
