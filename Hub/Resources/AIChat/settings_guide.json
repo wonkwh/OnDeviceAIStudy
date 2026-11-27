@@ -1,0 +1,70 @@
+{
+  "sections": [
+    {
+      "id": "parking_impact_sensitivity",
+      "keywords": ["주차", "충격", "감도", "이벤트", "주차 녹화", "parking", "impact", "sensitivity"],
+      "title": {"ko": "주차 충격 감도", "en": "Parking impact sensitivity"},
+      "body": {
+        "ko": "주차 중 충격을 얼마나 민감하게 감지할지 정합니다. 감도를 낮추면 문 닫는 소리나 지나가는 차량 진동으로 생기는 주차 이벤트 녹화가 줄어듭니다.",
+        "en": "Sets how sensitive impact detection is while parked. Lowering it reduces parking event recordings caused by door slams or passing vehicles."
+      },
+      "configKey": "parksensorsen",
+      "settingKey": "parksensorsen"
+    },
+    {
+      "id": "motion_sensitivity",
+      "keywords": ["주차", "모션", "움직임", "감도", "주차 녹화", "motion", "parking"],
+      "title": {"ko": "모션 감도", "en": "Motion sensitivity"},
+      "body": {
+        "ko": "주차 중 화면 속 움직임을 감지해 녹화를 시작하는 감도입니다. 사람이나 차가 자주 지나가는 곳이라면 감도를 낮추거나 끄면 녹화가 줄어듭니다.",
+        "en": "Sensitivity for starting a recording when motion is seen while parked. In busy places, lowering or turning it off reduces recordings."
+      },
+      "configKey": "frontmotionsensoren",
+      "settingKey": "frontmotionsensoren"
+    },
+    {
+      "id": "parking_recording_type",
+      "keywords": ["주차", "타임랩스", "저전력", "녹화 방식", "주차 녹화", "timelapse", "low power", "parking"],
+      "title": {"ko": "주차 녹화 방식", "en": "Parking recording type"},
+      "body": {
+        "ko": "타임랩스는 주차 시간 내내 낮은 프레임으로 이어 녹화하고, 저전력 모드는 충격이 있을 때만 녹화합니다. 녹화 파일을 줄이려면 저전력 모드를 고르세요.",
+        "en": "Time-lapse records continuously at a low frame rate; low-power mode records only on impact. Choose low-power mode for fewer files."
+      },
+      "configKey": "sleepmode",
+      "settingKey": "sleepmode"
+    },
+    {
+      "id": "parking_mode",
+      "keywords": ["주차", "주차 모드", "자동 주차", "주차 녹화", "parking mode"],
+      "title": {"ko": "주차 녹화 모드", "en": "Parking mode"},
+      "body": {
+        "ko": "시동이 꺼졌을 때 주차 녹화로 들어갈지 정합니다. 끄면 주차 중에는 녹화하지 않습니다.",
+        "en": "Sets whether the dashcam switches to parking recording when the engine is off. Turning it off stops recording while parked."
+      },
+      "configKey": "parkmode",
+      "settingKey": "parkmode"
+    },
+    {
+      "id": "parking_recording_time",
+      "keywords": ["주차", "녹화 시간", "주차 시간", "주차 녹화", "parking time"],
+      "title": {"ko": "주차 녹화 시간", "en": "Parking recording time"},
+      "body": {
+        "ko": "주차 녹화를 이어갈 최대 시간입니다. 짧게 하면 장시간 주차 시 녹화량과 배터리 소모가 줄어듭니다.",
+        "en": "Maximum time to keep parking recording. Shorter values reduce recordings and battery use during long parking."
+      },
+      "configKey": "parkrectime",
+      "settingKey": "parkrectime"
+    },
+    {
+      "id": "cutoff_voltage",
+      "keywords": ["방전", "배터리", "전압", "차단", "battery", "voltage", "cutoff"],
+      "title": {"ko": "방전 차단 전압", "en": "Low voltage cutoff"},
+      "body": {
+        "ko": "차량 배터리 전압이 이 값 아래로 내려가면 녹화를 멈춰 방전을 막습니다. 값을 높이면 더 일찍 꺼집니다.",
+        "en": "Stops recording when the car battery drops below this voltage to prevent drain. A higher value turns off sooner."
+      },
+      "configKey": "voltagelimit",
+      "settingKey": "voltagelimit"
+    }
+  ]
+}

@@ -1,1 +1,7 @@
 .DS_Store
+# 단말 HTTP 프로토콜 명세 — 비공개 문서라 올리지 않는다(06·12단계는 로컬에서만)
+Hub/Resources/AIChat/dashcam_protocol.md
+Hub/Resources/AIChat/dashcam_protocol_en.md
+# 학습한 파서 어댑터 — 비공개(08·09단계는 로컬에서만)
+Hub/Resources/AIChat/ai_chat_parser_adapter.json
+Hub/Resources/AIChat/ai_chat_parser_adapter.safetensors
