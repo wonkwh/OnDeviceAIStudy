@@ -11,8 +11,8 @@ from common import BASE, ROOT, adapter_dir, run_parser
 
 model, tokenizer = load(BASE, adapter_path=adapter_dir())
 for name, path in (
-    ("내 평가셋 (생성기와 같은 작성자)", "HubDevTests/Fixtures/ai_chat_eval_en.json"),
-    ("독립 평가셋 (다른 작성자)", "Scripts/ai_chat_train/eval_independent_en.json"),
+    ("내 평가셋 (생성기와 같은 작성자)", "scripts/fixtures/ai_chat_eval_en.json"),
+    ("독립 평가셋 (다른 작성자)", "scripts/ai_chat_train/eval_independent_en.json"),
 ):
     print(f"\n== {name}")
     run_parser(model, tokenizer, json.loads((ROOT / path).read_text()), None)

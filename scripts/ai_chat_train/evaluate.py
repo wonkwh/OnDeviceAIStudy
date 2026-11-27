@@ -162,7 +162,7 @@ def main():
     parser.add_argument("--adapter-path")
     parser.add_argument("--guide", action="store_true", help="안내 답변 표본도 출력한다")
     parser.add_argument(
-        "--eval", type=Path, default=ROOT / "HubDevTests/Fixtures/ai_chat_eval_en.json")
+        "--eval", type=Path, default=ROOT / "scripts/fixtures/ai_chat_eval_en.json")
     parser.add_argument("--dump", type=Path, help="문항별 출력을 이 파일에 JSON 으로 남긴다")
     parser.add_argument(
         "--prompt-fixture", type=Path, help="파서 프롬프트 토큰열을 이 파일에 쓰고 끝낸다")

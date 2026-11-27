@@ -10,11 +10,11 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 RESOURCES = ROOT / "Hub/Resources/AIChat"
 
-sys.path.insert(0, str(ROOT / "Scripts/ai_chat_train"))
+sys.path.insert(0, str(ROOT / "scripts/ai_chat_train"))
 from evaluate import chat_prompt, run_parser, swift_string  # noqa: E402,F401
 from generate_dataset import SYSTEM_PROMPT  # noqa: E402,F401
 
-_LOCAL_BASE = ROOT / "Scripts/ai_chat_train/runs/base/Qwen3-0.6B-4bit-public"
+_LOCAL_BASE = ROOT / "scripts/ai_chat_train/runs/base/Qwen3-0.6B-4bit-public"
 BASE = str(_LOCAL_BASE) if _LOCAL_BASE.exists() else "mlx-community/Qwen3-0.6B-4bit"
 
 

@@ -27,7 +27,7 @@ for bits in (8, 6, 4, 2):
     print(f"{bits:3d}  {stored:14.2f}  {error:10.2%}")
 
 # 실제 4비트 모델 파일의 한 층이 어떻게 저장돼 있는지 머리말만 읽는다
-model_file = ROOT / "Scripts/ai_chat_train/runs/base/Qwen3-0.6B-4bit-public/model.safetensors"
+model_file = ROOT / "scripts/ai_chat_train/runs/base/Qwen3-0.6B-4bit-public/model.safetensors"
 if model_file.exists():
     with model_file.open("rb") as file:
         header = json.loads(file.read(struct.unpack("<Q", file.read(8))[0]))
@@ -36,7 +36,7 @@ if model_file.exists():
         if "layers.0.self_attn.k_proj" in name:
             print(f"  {name.split('.')[-1]:8} {entry['dtype']:5} {entry['shape']}")
     print("  weight: 1024줄 x 128칸 x 32비트 = 줄마다 4,096비트 = 가중치 1,024개 x 4비트")
-    base = ROOT / "Scripts/ai_chat_train/runs/base"
+    base = ROOT / "scripts/ai_chat_train/runs/base"
     for folder in ("Qwen3-0.6B-bf16", "Qwen3-0.6B-4bit-public"):
         path = base / folder / "model.safetensors"
         if path.exists():
