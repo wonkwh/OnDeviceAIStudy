@@ -233,6 +233,9 @@ uv run python evaluate.py --model runs/qwen3-0.6b/fused-4bit [--eval eval_indepe
 | Qwen3 0.6B 합친 뒤 6bit | v2 | 112/112 | 76/80 | 77/80 | 473MB |
 | **Qwen3 0.6B 합친 뒤 4bit** | v2 | 112/112 | 77/80 | 77/80 | **331MB** |
 | Qwen3 0.6B 4bit base + 어댑터(합치지 않음) | v2 | 112/112 | 76/80 | 77/80 | 331MB + 20MB |
+| Qwen3 0.6B 합친 뒤 4bit, 5,000 스텝 (11-27) | v3 | 105/112 | 67/80 | 76/80 | |
+| Qwen3 0.6B 합친 뒤 4bit, 2,500 스텝 (11-27) | v3 | 112/112 | 75/80 | 76/80 | |
+| Qwen3 0.6B 합친 뒤 4bit, 2,000 스텝 (11-27) | v4 | 112/112 | 75/80 | 78/80 | |
 
 확인한 것:
 - **base 는 Qwen3 0.6B.** 독립셋에서 Gemma 270M 보다 8~9문항 더 맞는다.
@@ -246,6 +249,21 @@ uv run python evaluate.py --model runs/qwen3-0.6b/fused-4bit [--eval eval_indepe
 - **독립셋에서 틀린 3문항은 모두 video 를 drive 로 읽은 것**이다: "I want to watch yesterday's drive to Costco",
   "Can you play back the trip from home to Brighton? I want the video, not the map."(Brighton 을 Brightwell 로 씀),
   "Show the sudden stop on the motorway at 8:05 am today". drive·trip 같은 낱말이 있는 영상 요청이 약하다.
+- **v3(Claude 바꿔 쓰기, 11-27)는 독립셋을 올리지 못했다.** 5,000 스텝은 과학습이다 — val 이 0.000 → 0.007 로 오르고
+  daysAgo 2 → 1, Brooklyn → "Broth" 같은 오답이 생겼다. val 이 가장 낮은 2,500 스텝을 골랐다(독립셋으로 고르지 않았다).
+  video 를 drive 로 읽는 오답은 3 → 1 로 줄었고, unknown·settingsHelp 경계 오답 3건과 origin 에 "none" 글자 1건이 새로 생겼다.
+- **v4(11-27) = v3 + unknown 경계 템플릿(앱 추천·폰 설정·차량 경고등) + 평가셋 세 개를 학습 문장에서 제외.** 첫 독립셋의
+  오답을 보고 생성기를 고쳤으므로 첫 독립셋은 더 이상 독립이 아니다. 새 독립셋 80문항
+  (`eval_independent_v2_en.json`, Sonnet 5.5 가 라벨 규칙만 받고 씀, "this afternoon" 1건만 daysAgo 0 으로 고침)을 기준으로 본다.
+
+  | 새 독립셋 | 전체 | intent |
+|---|---|---|
+| v2 | 71/80 | 72/80 |
+| v3 2,500 | 70/80 | 72/80 |
+| **v4 2,000** | **75/80** | **78/80** |
+
+  v2 의 오답 7건이 폰·차량 질문을 settingsHelp 로 읽은 것이었고 v4 는 3건이다. v4 의 새 오답: unknown 질문에 origin·period 를
+  채움(intent 는 맞음), "dashcam Wi-Fi" 연결을 unknown 으로 읽음, Albany → "Albaney". 80문항에서 4문항 차이다.
 - **합친 모델은 안내 답변을 못 한다.** `HubGuidePrompt` 로 물으면 문장 대신 깨진 JSON 을 낸다(5문항 중 5).
   미세조정 전 4bit base 는 guide 조각이 주어진 4문항에 쓸 만한 답을 했다.
 
@@ -287,8 +305,9 @@ uv run python evaluate.py --model runs/qwen3-0.6b/fused-4bit [--eval eval_indepe
 
 ### T4 기록 (2026-11-16) — 코드 완료 · 미빌드 · 실기 측정 대기
 
-- **어댑터를 앱 번들에 넣었다.** `Hub/Resources/AIChat/ai_chat_parser_adapter.safetensors`(19MB, sha256 `e443f9de3c20337c…`)와
-  `ai_chat_parser_adapter.json`(`num_layers` 28). `runs/qwen3-0.6b/adapter-ship/` 의 사본이다.
+- **어댑터를 앱 번들에 넣었다.** `Hub/Resources/AIChat/ai_chat_parser_adapter.safetensors`(19MB, sha256 `8a653edac9471e82…`, 11-27 v4 로 교체)와
+  `ai_chat_parser_adapter.json`(`num_layers` 28). `runs/qwen3-0.6b/adapter-ship-v4/` 의 사본이다(v2 는 `adapter-ship/`).
+  공개 4bit base + 이 어댑터: 내 평가셋 112/112, 첫 독립셋 75/80, 새 독립셋 78/80(intent 79/80). 같은 조건의 v2 는 새 독립셋 71/80.
 - **`MLXChatBackend`** — `init(modelDirectory:calendar:parserAdapter:)`. 어댑터를 주면 파싱 동안만 올리고
   (`LanguageModel.perform(with:)`, 실패해도 내린다) 전용 지시문을 쓴다. 안내 답변은 어댑터 없이 base 로 돈다.
   어댑터를 주지 않으면 전과 같다.
@@ -311,13 +330,14 @@ xcodebuild test -project Hub.xcodeproj -scheme Hub-Dev -destination 'platform=iO
 ### 이 트랙의 열린 질문
 
 1. ~~스크립트·학습 데이터를 둘 곳~~ → `Scripts/ai_chat_train/` (11-13 결정).
-2. ~~데이터 생성에 쓸 큰 LLM~~ → 지금은 쓰지 않는다. T3 정확도가 모자라 바꿔 쓰기를 더할 때 다시 정한다.
+2. ~~데이터 생성에 쓸 큰 LLM~~ → Claude Opus 5.5 로 바꿔 쓴다(11-27, `paraphrase_dataset.py`, `claude -p`). 라벨은 원문 것을 쓰고
+   라벨을 정하는 낱말이 원문과 같은 문장만 남긴다. v3 = 원문 6,000 + 바꿔 쓴 10,179줄.
 3. ~~어댑터(19MB)를 둘 곳~~ → 앱 번들(11-16, 권장안으로 진행). 어댑터와 앱의 지시문·프롬프트 형식이 같은 릴리스로 묶인다.
    base 는 공개 repo 를 쓰므로 올릴 필요가 없다.
 4. ~~영어가 아닌 질문이 오면~~ → 미지원 안내(11-16, 권장안으로 진행). S4 에서 `AIChatAvailability` 에 넣는다.
 5. ~~지시문을 모델별로 고르는 방법~~ → 어댑터가 있으면 전용 지시문, 없으면 범용 지시문(`MLXChatBackend`, 11-16).
 6. ~~안내 답변·내보내는 형태~~ → B, 4bit base + 어댑터 (11-16 결정).
-9. video 를 drive 로 읽는 오답(독립셋 3건)을 생성기에 보강할지. 보강하면 독립셋을 새로 써야 한다.
+9. ~~video 를 drive 로 읽는 오답을 생성기에 보강할지~~ → 독립셋을 새로 썼다(11-27, `eval_independent_v2_en.json`). 보강은 unknown 경계만 했다.
 7. ~~"전체"를 topic 글자까지 볼지~~ → 유무만 비교 (11-10 결정).
 8. ~~last night·tonight 의 라벨~~ → 평가셋·학습 데이터에서 뺀다 (11-10 확인).
 

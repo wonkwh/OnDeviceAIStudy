@@ -2,7 +2,7 @@
 """AI 채팅 전용 모델 학습 데이터 생성기 — 영어 질문 → HubQueryDTO JSON (docs/ai_chat_mlx_design.md T2).
 
 칸 값을 먼저 뽑고 그 값에 맞는 질문을 조립하므로 라벨은 구성상 정확하다.
-사용: python3 Scripts/ai_chat_train/generate_dataset.py [--count 6000] [--seed 7] [--out DIR]
+사용: python3 scripts/ai_chat_train/generate_dataset.py [--count 6000] [--seed 7] [--out DIR]
 """
 
 import argparse
@@ -224,6 +224,7 @@ S_GENERIC = [
     "I can't find the {t} setting. Where is it?", "{t} settings", "How do I use {the}{t}?",
     "How does {the}{t} work?", "What does {the}{t} do?", "Tell me about the {t} setting",
     "How does {the}{t} work in this app?", "Does this dashcam have {t} settings?",
+    "Walk me through {the}{t}", "Can you explain {the}{t}?",
 ]
 # it·that·this 는 직전 결과나 오늘을 가리키는 말이 아니다 — reference·daysAgo 를 채우지 않는 예로 넣는다.
 S_CHANGE = [
@@ -249,7 +250,8 @@ S_PROBLEM = [
     "What setting helps with {t}?", "Which setting fixes {t}?",
 ]
 S_SPECIAL = {
-    "SD card": ["How do I format the {t}?", "Where can I format the {t}?", "format {t}"],
+    "SD card": ["How do I format the {t}?", "Where can I format the {t}?", "format {t}",
+                "Walk me through formatting the {t}"],
     "memory card": ["How do I format the {t}?", "Where can I format the {t}?"],
     "firmware": ["How do I update the {t}?", "Where can I update the {t}?", "How do I check the {t} version?"],
     "firmware update": ["How do I run a {t}?", "Where is the {t}?"],
@@ -294,6 +296,8 @@ UNKNOWN_FIXED = [
     "What time does the store close today?", "Is the bank open today?",
     "How cold was it yesterday morning?", "Is this a toll road?",
 ]
+U_APPS = ["video editing", "photo editing", "navigation", "music", "parking", "weather", "fitness"]
+U_CAR_LIGHTS = ["check engine", "tire pressure", "battery", "oil", "brake", "airbag"]
 U_CITIES = ["Seattle", "Chicago", "Boston", "Denver", "Miami", "London", "Paris", "Tokyo", "Sydney", "Toronto"]
 U_TEMPLATES = [
     ("What's the weather like in {a}?", U_CITIES, None),
@@ -324,6 +328,19 @@ U_TEMPLATES = [
     ("Who won the {a} game?", ["Lakers", "Yankees", "Seahawks", "Arsenal", "Warriors", "Cubs"], None),
     ("Book a table for {a} at {b}", [2, 4, 6], ["7 pm", "8 pm", "noon"]),
     ("Order {a}", ["a pizza", "sushi", "a coffee", "groceries"], None),
+    # 앱·폰·차량 일반 질문 — video·light·setting 같은 낱말이 있어도 블랙박스 설정이 아니다.
+    ("Recommend a good {a} app", U_APPS, None),
+    ("What's the best {a} app for iPhone?", U_APPS, None),
+    ("How do I {a} on my phone?", ["edit a video", "free up storage", "update iOS", "turn on dark mode",
+                                   "back up my photos", "record my screen"], None),
+    ("How do I change my iPhone's {a}?", ["wallpaper", "ringtone", "font size", "passcode"], None),
+    ("Why is my {a} light on?", U_CAR_LIGHTS, None),
+    ("Why has my {a} light been on since {b}?", U_CAR_LIGHTS, ["this morning", "yesterday", "last week"]),
+    ("How do I reset the {a} light?", ["tire pressure", "oil change", "maintenance", "check engine"], None),
+    ("My car {a}. What's wrong?", ["makes a noise when I brake", "won't start", "pulls to the left",
+                                   "smells like burning"], None),
+    ("How do I {a}?", ["jump start my car", "check my tire pressure", "pair my phone with my car",
+                       "reset my car's clock"], None),
 ]
 
 
@@ -672,8 +689,10 @@ def validate(question, answer):
 
 def generate(count, seed):
     rng = random.Random(seed)
-    eval_cases = json.loads((ROOT / "HubDevTests/Fixtures/ai_chat_eval_en.json").read_text())
-    held_out = {normalize(case["q"]) for case in eval_cases}
+    # 평가셋 세 개 모두 학습 문장에서 뺀다 — 독립셋 문장이 템플릿과 우연히 같을 수 있다
+    eval_files = [ROOT / "scripts/fixtures/ai_chat_eval_en.json"] + sorted(
+        Path(__file__).resolve().parent.glob("eval_independent*_en.json"))
+    held_out = {normalize(case["q"]) for path in eval_files for case in json.loads(path.read_text())}
     rows, seen, skipped = [], Counter(), 0
     for kind, share in QUOTAS.items():
         wanted, made, attempts = round(count * share), 0, 0
